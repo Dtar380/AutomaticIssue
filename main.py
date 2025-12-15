@@ -24,8 +24,7 @@ from src.config import (
     API_TOKEN,
     EVENT_PATH,
     REPO,
-    DEFAULT_TEMPLATES_DIR,
-    USER_TEMPLATES_DIR,
+    TEMPLATES_DIR,
     DUPLICATE_THRESHOLD,
 )
 from src.event import get_issue_details
@@ -73,9 +72,7 @@ def main() -> None:
         print("INFO: Issue does not follow template.")
         comment_issue(
             issue_number,
-            render_template(
-                USER_TEMPLATES_DIR or DEFAULT_TEMPLATES_DIR, "invalid_template"
-            ),
+            render_template(TEMPLATES_DIR, "invalid_template"),
         )
         close_issue(issue_number)
         return
@@ -87,7 +84,7 @@ def main() -> None:
         comment_issue(
             issue_number,
             render_template(
-                USER_TEMPLATES_DIR or DEFAULT_TEMPLATES_DIR,
+                TEMPLATES_DIR,
                 "duplicated",
                 open_duplicates=duplicates["open_duplicates"],
                 closed_duplicates=duplicates["closed_duplicates"],
@@ -108,7 +105,7 @@ def main() -> None:
     comment_issue(
         issue_number,
         render_template(
-            USER_TEMPLATES_DIR or DEFAULT_TEMPLATES_DIR,
+            TEMPLATES_DIR,
             "passed",
             assignees=assignees or [],
         ),
