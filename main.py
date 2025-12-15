@@ -62,6 +62,8 @@ def main() -> None:
         raise ValueError(
             "ERROR: Missing GITHUB_EVENT_PATH environment variable."
         )
+    if not TEMPLATES_DIR.exists() or not TEMPLATES_DIR.is_dir():
+        raise FileNotFoundError("ERROR: Templates directory not found.")
 
     # Retrieve issue details from the GitHub event payload
     issue = get_issue_details(EVENT_PATH)
