@@ -214,10 +214,3 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
-
-
-# Files and directories non related to python
-.secrets
-pre-commit
-test/
-release/
