@@ -1,0 +1,23 @@
+name: Issue Automation
+description: Validate issue templates, detect duplicates and auto-assign issues.
+author: Dtar380
+
+inputs:
+  token:
+    description: "GitHub token with repo scope"
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "3.x"
+
+    - run: pip install -r ${{ github.action_path }}/requirements.txt
+      shell: bash
+
+    - run: python ${{ github.action_path }}/scripts/main.py
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.token }}
