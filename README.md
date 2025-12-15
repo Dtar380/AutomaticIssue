@@ -48,6 +48,9 @@ jobs:
                 repo: ${{ github.repository }}
 ```
 
+> [!WARNING]
+> You must include a `<!-- TEMPLATE -->` comment at the start of your temmplates for the script to work properly.
+
 ## :open_file_folder: **Kown Issues**
 There is no known issues on the project, you can submit yours to [issues](https://github.com/Dtar380/MinecraftDockerCLI/issues/new/choose).
 
