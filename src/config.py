@@ -36,7 +36,7 @@ USER_TEMPLATES_DIR: Path | None = (
     else None
 )  # User-defined templates directory
 DEFAULT_TEMPLATES_DIR: Path = Path(
-    os.path.join(os.environ.get("GITHUB_ACTION_PATH", ""), "templates")
+    "/home/runner/work/AutomaticIssue/AutomaticIssue/templates"
 )  # Default templates directory
 
 TEMPLATES_DIR = USER_TEMPLATES_DIR or DEFAULT_TEMPLATES_DIR
