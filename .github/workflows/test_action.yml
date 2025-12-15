@@ -1,0 +1,19 @@
+name: Test Issue Automation
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  test-issue-automation:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Test Issue Automation Action
+        uses: ./
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repo: ${{ github.repository }}

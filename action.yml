@@ -23,7 +23,13 @@ inputs:
 runs:
   using: composite
   steps:
-    - uses: actions/setup-python@v5
+    - name: Checkout action repository
+      uses: actions/checkout@v5
+      with:
+        token: ${{ inputs.token }}
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
       with:
         python-version: "3.x"
 
@@ -36,3 +42,5 @@ runs:
         GITHUB_TOKEN: ${{ inputs.token }}
         GITHUB_REPOSITORY: ${{ inputs.repo }}
         DUPLICATE_THRESHOLD: ${{ inputs.duplicate_threshold }}
+        TEMPLATES_DIR: ${{ inputs.comment_templates_path }}
+        GITHUB_ACTION_PATH: ${{ github.action_path }}
