@@ -1,13 +1,31 @@
 #################################################
+#  MODULE DESCRIPTION
+#################################################
+
+"""
+Automates GitHub issue management by:
+1. Validating issue templates.
+2. Detecting duplicate issues based on title similarity.
+3. Assigning issues to available contributors.
+4. Commenting on issues with appropriate messages.
+
+Uses GitHub API for interactions and Jinja2 for templating.
+
+Authors: Dtar380
+"""
+
+#################################################
 #  Importing MODULES
 #################################################
 from __future__ import annotations
 
+# STANDARD MODULES
 import os
 import random
 import json
 from typing import Any
 
+# EXTERNAL MODULES
 import requests  # type: ignore
 from rapidfuzz import fuzz
 from jinja2 import Environment, FileSystemLoader, select_autoescape
@@ -17,21 +35,29 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 #  CODE
 #################################################
 #  GLOBAL VARIABLES
-API = "https://api.github.com/"
+# CONSTANTS
+API = "https://api.github.com/"  # GitHub API base URL
 
-API_TOKEN = os.environ.get("GITHUB_TOKEN", None)
-REPO = os.environ.get("GITHUB_REPOSITORY", None)
+# ENVIRONMENT VARIABLES
+API_TOKEN = os.environ.get("GITHUB_TOKEN", None)  # GitHub API token
+REPO = os.environ.get("GITHUB_REPOSITORY", None)  # Repository name
 
-DUPLICATE_THRESHOLD = int(os.environ.get("DUPLICATE_THRESHOLD", 80))
+DUPLICATE_THRESHOLD = int(
+    os.environ.get("DUPLICATE_THRESHOLD", 80)
+)  # Similarity threshold
 
-USER_TEMPLATES_DIR = os.environ.get("TEMPLATES_DIR", None)
+USER_TEMPLATES_DIR = os.environ.get(
+    "TEMPLATES_DIR", None
+)  # User-defined templates directory
 DEFAULT_TEMPLATES_DIR = os.path.join(
     os.environ.get("GITHUB_ACTION_PATH", ""), "templates"
-)
+)  # Default templates directory
 
-EVENT_PATH = os.environ.get("GITHUB_EVENT_PATH", None)
+EVENT_PATH = os.environ.get(
+    "GITHUB_EVENT_PATH", None
+)  # Path to GitHub event payload
 
-
+# HEADERS FOR API REQUESTS
 HEADERS = {
     "Accept": "application/vnd.github+json",
     "Authorization": f"Bearer {API_TOKEN}",
@@ -42,6 +68,13 @@ HEADERS = {
 #  FUNCTIONS
 #  ACTIONS
 def close_issue(issue_number: int) -> None:
+    """
+    Closes a GitHub issue by a given issue number.
+
+    :param issue_number: Number of the issue to be closed.
+    :type issue_number: int
+    """
+
     payload = json.dumps({"state": "closed"})
     try:
         requests.patch(
@@ -59,6 +92,15 @@ def close_issue(issue_number: int) -> None:
 
 
 def comment_issue(issue_number: int, comment: str) -> None:
+    """
+    Adds a comment to a GitHub issue by a given issue number.
+
+    :param issue_number: Number of the issue to be commented on.
+    :type issue_number: int
+    :param comment: Content of the comment to be added.
+    :type comment: str
+    """
+
     payload = json.dumps({"body": comment})
     try:
         requests.post(
@@ -77,7 +119,16 @@ def comment_issue(issue_number: int, comment: str) -> None:
         print(f"ERROR: An unexpected error occurred: {e}")
 
 
-def add_assignees(issue_number: int, assignees: list[Any]) -> None:
+def add_assignees(issue_number: int, assignees: list[str]) -> None:
+    """
+    Adds assignees to a GitHub issue by a given issue number.
+
+    :param issue_number: Number of the issue to add assignees to.
+    :type issue_number: int
+    :param assignees: List of assignees to be added to the issue.
+    :type assignees: list[str]
+    """
+
     payload = json.dumps({"assignees": assignees})
     try:
         requests.post(
@@ -100,6 +151,15 @@ def add_assignees(issue_number: int, assignees: list[Any]) -> None:
 
 #  VERIFICATIONS
 def check_template(issue: dict[str, Any]) -> bool:
+    """
+    Checks if a GitHub issue follows a predefined template.
+
+    :param issue: GitHub issue details.
+    :type issue: dict[str, Any]
+    :return: True if the issue follows the template, False otherwise.
+    :rtype: bool
+    """
+
     try:
         if "<!-- TEMPLATE" not in issue["body"] and not issue["labels"]:
             return False
@@ -122,6 +182,17 @@ def check_template(issue: dict[str, Any]) -> bool:
 def check_duplicate(
     issue: dict[str, Any], threshold: int
 ) -> dict[str, list[Any]]:
+    """
+    Checks for duplicate GitHub issues based on title similarity.
+
+    :param issue: GitHub issue details.
+    :type issue: dict[str, Any]
+    :param threshold: Similarity threshold (0-100) for considering issues as duplicates.
+    :type threshold: int
+    :return: Dictionary with lists of open and closed duplicate issues.
+    :rtype: dict[str, list[Any]]
+    """
+
     return_statement: dict[str, list[Any]] = {
         "open_duplicates": [],
         "closed_duplicates": [],
@@ -179,7 +250,44 @@ def check_duplicate(
 
 
 #  HELPERS
+def get_issue_number(event_path: str) -> int:
+    """
+    Retrieves the issue number from the GitHub event payload.
+
+    :param event_path: Path to the GitHub event JSON file.
+    :type event_path: str
+    :return: Issue number.
+    :rtype: int
+    """
+
+    with open(event_path, "r", encoding="utf-8") as f:
+        event_data = json.load(f)
+    return event_data["issue"]["number"]
+
+
+def get_issue_details(event_path: str) -> dict[str, Any]:
+    """
+    Retrieves the issue details from the GitHub event payload.
+
+    :param event_path: Path to the GitHub event JSON file.
+    :type event_path: str
+    :return: Issue details.
+    :rtype: dict[str, Any]
+    """
+
+    with open(event_path, "r", encoding="utf-8") as f:
+        event_data = json.load(f)
+    return event_data["issue"]
+
+
 def get_contributors() -> list[str]:
+    """
+    Fetches the list of contributors for the repository.
+
+    :return: List of contributor usernames.
+    :rtype: list[str]
+    """
+
     try:
         response = requests.get(
             f"{API}repos/{REPO}/contributors",
@@ -204,6 +312,17 @@ def get_contributors() -> list[str]:
 
 
 def check_assignees(issue_number: int, k: int) -> list[str]:
+    """
+    Checks and returns a list of available assignees for a GitHub issue.
+
+    :param issue_number: Number of the issue to check assignees for.
+    :type issue_number: int
+    :param k: Number of assignees to return.
+    :type k: int
+    :return: List of available assignees.
+    :rtype: list[str]
+    """
+
     contributors = get_contributors()
     if not contributors:
         return []
@@ -236,19 +355,20 @@ def check_assignees(issue_number: int, k: int) -> list[str]:
     return random.sample(assignees, k)
 
 
-def get_issue_number(event_path: str) -> int:
-    with open(event_path, "r", encoding="utf-8") as f:
-        event_data = json.load(f)
-    return event_data["issue"]["number"]
-
-
-def get_issue_details(event_path: str) -> dict[str, Any]:
-    with open(event_path, "r", encoding="utf-8") as f:
-        event_data = json.load(f)
-    return event_data["issue"]
-
-
 def render_template(template_path: str, template_name: str, **variables) -> str:
+    """
+    Renders a Jinja2 template with the provided variables.
+
+    :param template_path: Path to the directory containing the templates.
+    :type template_path: str
+    :param template_name: Name of the template file (without extension).
+    :type template_name: str
+    :param variables: Variables to be passed to the template.
+    :type variables: dict[str, Any]
+    :return: Rendered template as a string.
+    :rtype: str
+    """
+
     if not os.path.isdir(template_path):
         raise FileNotFoundError("ERROR: Templates directory not found.")
 
@@ -267,6 +387,18 @@ def render_template(template_path: str, template_name: str, **variables) -> str:
 
 #  MAIN ENTRY POINT
 def main() -> None:
+    """
+    Main function to automate GitHub issue management.
+
+    1. Validates environment variables.
+    2. Retrieves issue details from the GitHub event payload.
+    3. Checks if the issue follows a predefined template.
+    4. Checks for duplicate issues based on title similarity.
+    5. Assigns the issue to available contributors.
+    6. Comments on the issue with appropriate messages based on the checks.
+    7. Closes the issue if it does not follow the template or is a duplicate
+    """
+
     if API_TOKEN is None:
         raise ValueError("ERROR: Missing GITHUB_TOKEN environment variable.")
     if REPO is None:
