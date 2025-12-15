@@ -36,8 +36,7 @@ runs:
     - run: pip install -r ${{ github.action_path }}/requirements.txt
       shell: bash
 
-    - run: python -m src.main
-      working-directory: ${{ github.action_path }}
+    - run: python ${{ github.action_path }}/main.py
       shell: bash
       env:
         GITHUB_TOKEN: ${{ inputs.token }}
