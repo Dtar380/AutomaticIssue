@@ -1,18 +1,18 @@
 Thanks for submitting your issue!
-{ % if open_duplicates % }
+{% if open_duplicates %}
 However, it appears that this issue may be a duplicate of an existing one.
 Check the following issues that seem similar:
-{ % for issue in open_duplicates % }
+{% for issue in open_duplicates %}
 - [#{{ issue.number }}]({{ issue.html_url }})
-{ % endfor % }
-{ % else % }
-{ % if closed_duplicates % }
+{% endfor %}
+{% else %}
+{% if closed_duplicates %}
 However, it appears that this issue may be similar to a previously closed one.
 Check the following issues that seem similar:
-{ % for issue in closed_duplicates % }
+{% for issue in closed_duplicates %}
 - [#{{ issue.number }}]({{ issue.html_url }})
-{ % endfor % }
-{ % endif % }
-{ % endif % }
+{% endfor %}
+{% endif %}
+{% endif %}
 This issue will be closed automatically to avoid duplication.
 If you believe this is a mistake, please feel free to reopen it or provide more information.

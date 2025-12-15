@@ -1,11 +1,11 @@
 Thank you for submitting your issue!
-{ % if assignees % }
+{% if assignees %}
 This issue has been automatically assigned to:
-{ % for assignee in assignees % }
+{% for assignee in assignees %}
 - @{{ assignee }}
-{ % endfor % }
+{% endfor %}
 They will be reviewing this issue as soon as possible.
-{ % else % }
+{% else %}
 Currently there are no available contributors to assign the issue.
 A contributor will be assigned when one becomes available.
-{ % endif % }
+{% endif %}
