@@ -17,7 +17,7 @@ import random
 import requests  # type: ignore
 
 # LOCAL MODULES
-from src.config import API, HEADERS, REPO
+from .config import API, HEADERS, REPO
 
 
 #################################################
