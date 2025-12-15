@@ -35,8 +35,8 @@ USER_TEMPLATES_DIR: Path | None = (
     if os.environ.get("TEMPLATES_DIR", None) is not None
     else None
 )  # User-defined templates directory
-DEFAULT_TEMPLATES_DIR: Path = (
-    Path(__file__).parent.resolve() / "templates"
+DEFAULT_TEMPLATES_DIR: Path = Path(
+    os.path.join(os.environ.get("GITHUB_ACTION_PATH", ""), "templates")
 )  # Default templates directory
 
 TEMPLATES_DIR = USER_TEMPLATES_DIR or DEFAULT_TEMPLATES_DIR
