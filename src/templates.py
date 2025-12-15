@@ -46,6 +46,8 @@ def render_template(
         autoescape=select_autoescape(["md"]),
     )
 
+    print(template_path)
+
     # Load and render the template
     try:
         template = env.get_template(f"{template_name}.j2")
