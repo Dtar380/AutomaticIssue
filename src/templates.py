@@ -42,7 +42,7 @@ def render_template(
 
     # Set up the Jinja2 environment
     env = Environment(
-        loader=FileSystemLoader(template_path),
+        loader=FileSystemLoader(str(template_path)),
         autoescape=select_autoescape(["md"]),
     )
 
