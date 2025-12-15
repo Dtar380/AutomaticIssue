@@ -299,7 +299,7 @@ def main() -> None:
             issue_number,
             render_template(
                 USER_TEMPLATES_DIR or DEFAULT_TEMPLATES_DIR,
-                "duplicate_issue",
+                "duplicated",
                 open_duplicates=duplicates["open_duplicates"],
                 closed_duplicates=duplicates["closed_duplicates"],
             ),
