@@ -46,7 +46,7 @@ def render_template(
         autoescape=select_autoescape(["md"]),
     )
 
-    print(template_path)
+    print(template_path.resolve())
 
     # Load and render the template
     try:
