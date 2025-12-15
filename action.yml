@@ -7,6 +7,19 @@ inputs:
     description: "GitHub token with repo scope"
     required: true
 
+  repo:
+    description: "Repository in the format 'owner/repo'"
+    required: true
+
+  duplicate_threshold:
+    description: "Similarity threshold for duplicate detection (0-100)"
+    required: false
+    default: "80"
+
+  comment_templates_path:
+    description: "Path to comment templates"
+    required: false
+
 runs:
   using: composite
   steps:
@@ -21,3 +34,5 @@ runs:
       shell: bash
       env:
         GITHUB_TOKEN: ${{ inputs.token }}
+        GITHUB_REPOSITORY: ${{ inputs.repo }}
+        DUPLICATE_THRESHOLD: ${{ inputs.duplicate_threshold }}
