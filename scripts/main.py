@@ -258,7 +258,7 @@ def render_template(template_path: str, template_name: str, **variables) -> str:
     )
 
     try:
-        template = env.get_template(template_name)
+        template = env.get_template(f"{template_name}.j2")
         return template.render(**variables)
     except Exception as e:
         print(f"ERROR: An error occurred while rendering the template: {e}")
