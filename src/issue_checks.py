@@ -19,7 +19,7 @@ from rapidfuzz import fuzz
 import requests  # type: ignore
 
 # LOCAL MODULES
-from .config import API, HEADERS, REPO
+from src.config import API, HEADERS, REPO
 
 
 #################################################

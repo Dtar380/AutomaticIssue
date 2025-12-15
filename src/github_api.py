@@ -18,7 +18,7 @@ import json
 import requests  # type: ignore
 
 # LOCAL MODULES
-from .config import API, REPO, HEADERS
+from src.config import API, REPO, HEADERS
 
 
 #################################################

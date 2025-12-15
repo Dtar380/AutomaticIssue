@@ -20,7 +20,7 @@ Authors: Dtar380
 from __future__ import annotations
 
 # LOCAL MODULES
-from .config import (
+from src.config import (
     API_TOKEN,
     EVENT_PATH,
     REPO,
@@ -28,11 +28,11 @@ from .config import (
     USER_TEMPLATES_DIR,
     DUPLICATE_THRESHOLD,
 )
-from .event import get_issue_details
-from .issue_checks import check_template, check_duplicate
-from .assignees import check_assignees
-from .templates import render_template
-from .github_api import comment_issue, close_issue, add_assignees
+from src.event import get_issue_details
+from src.issue_checks import check_template, check_duplicate
+from src.assignees import check_assignees
+from src.templates import render_template
+from src.github_api import comment_issue, close_issue, add_assignees
 
 
 #################################################
